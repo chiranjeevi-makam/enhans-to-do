@@ -1,1 +1,26 @@
-/* Write your CSS here */
+.compledView {
+  display: flex;
+  justify-content: space-between;
+}
+.buttons {
+  display: flex;
+}
+.edit {
+  display: flex;
+  justify-content: center;
+}
+.ValueElement {
+  display: block;
+}
+.ValueElementHidden {
+  display: none;
+}
+.saveShow {
+  display: block;
+}
+.saveHidden {
+  display: none;
+}
+.para {
+  text-decoration: line-through;
+}
