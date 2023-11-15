@@ -65,38 +65,27 @@ class SimpleTodos extends Component {
   state = {data: initialTodosList, add: '', id: ''}
 
   collect = event => {
-    const enterText = event.target.value
-
-    const splitText = enterText.split(' ')
-    const title = splitText.slice(0, -1).join(' ')
-    const idEnter = splitText.slice(-1)[0]
-
-    this.setState({add: title, id: idEnter})
+    this.setState({add: event.target.value})
   }
 
   add = () => {
-    const {add, id, data} = this.state
-    const idNum = parseInt(id, 10)
+    const {add, data} = this.state
 
-    if (Number.isNaN(idNum) || idNum <= 0) {
+    if (add.trim() === '') {
       return
     }
 
-    const creatingNewItems = []
-
-    for (let i = 0; i < idNum; i += 1) {
-      const newId = data.length + i + 1
-      creatingNewItems.push({
-        id: newId,
-        title: add,
-        completedStatus: false,
-        modification: false,
-      })
+    const newTodo = {
+      id: data.length + 1,
+      title: add,
+      completedStatus: false,
+      modification: false,
     }
 
     this.setState(prevState => ({
       ...prevState,
-      data: [...prevState.data, ...creatingNewItems],
+      data: [...prevState.data, newTodo],
+      add: '',
     }))
   }
 
@@ -108,63 +97,46 @@ class SimpleTodos extends Component {
 
   editTodo = id => {
     const {data} = this.state
-    const updatedData = data.map(todo => {
-      if (todo.id === id) {
-        return {
-          ...todo,
-          modification: true,
-        }
-      }
-      return todo
-    })
+    const updatedData = data.map(todo =>
+      todo.id === id ? {...todo, modification: true} : todo,
+    )
 
     this.setState({data: updatedData})
   }
 
   saveTodo = (id, updatedTitle) => {
     const {data} = this.state
-    const updatedData = data.map(todo => {
-      if (todo.id === id) {
-        return {
-          ...todo,
-          title: updatedTitle,
-          modification: false,
-        }
-      }
-      return todo
-    })
+    const updatedData = data.map(todo =>
+      todo.id === id
+        ? {...todo, title: updatedTitle, modification: false}
+        : todo,
+    )
 
     this.setState({data: updatedData})
   }
 
   toggleComplete = id => {
     this.setState(prevState => {
-      const updatedData = prevState.data.map(todo => {
-        if (todo.id === id) {
-          return {
-            ...todo,
-            completedStatus: !todo.completedStatus,
-          }
-        }
-        return todo
-      })
+      const updatedData = prevState.data.map(todo =>
+        todo.id === id
+          ? {...todo, completedStatus: !todo.completedStatus}
+          : todo,
+      )
 
       return {data: updatedData}
     })
   }
 
   render() {
-    const {data, add, id} = this.state
-    console.log(add)
-    console.log(id)
-    console.log(data.length)
-    console.log(data)
+    const {data, add} = this.state
+
     return (
       <>
         <div className="add">
           <input
             type="text"
             placeholder="Enter your todo"
+            value={add}
             onChange={this.collect}
           />
           <button type="button" className="addButton" onClick={this.add}>
@@ -174,7 +146,6 @@ class SimpleTodos extends Component {
         <div className="backgroundContainer">
           <div className="listContainer">
             <h1 className="manHeading">Simple Todos</h1>
-
             <ul className="listItems">
               {data.map(each => (
                 <TodoItem
